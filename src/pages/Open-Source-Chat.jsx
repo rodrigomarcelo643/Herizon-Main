@@ -1,21 +1,34 @@
-import { useState, useRef, useEffect } from 'react';
-import { Send, BookText, Presentation, CircleDollarSign } from 'lucide-react';
-import Navbar from '../components/Navbar';
+import { useState, useRef, useEffect } from "react";
+import {
+  Send,
+  BookText,
+  Presentation,
+  CircleDollarSign,
+  MapPin,
+} from "lucide-react";
+import Navbar from "../components/Navbar";
 
 export default function OpenSourceChat() {
   const [messages, setMessages] = useState([]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const [partialResponse, setPartialResponse] = useState('');
+  const [partialResponse, setPartialResponse] = useState("");
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [mapLocation, setMapLocation] = useState("");
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
+const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
+
   const quickActions = [
-    { icon: <BookText className="h-5 w-5" />, text: 'Business plan guide' },
-    { icon: <Presentation className="h-5 w-5" />, text: 'Pitch advice' },
-    { icon: <CircleDollarSign className="h-5 w-5" />, text: 'Pricing strategy' },
-    { icon: <BookText className="h-5 w-5" />, text: 'Financial basics' }
+    { icon: <BookText className="h-5 w-5" />, text: "Business plan guide" },
+    { icon: <Presentation className="h-5 w-5" />, text: "Pitch advice" },
+    {
+      icon: <CircleDollarSign className="h-5 w-5" />,
+      text: "Pricing strategy",
+    },
+    { icon: <MapPin className="h-5 w-5" />, text: "Find coffee shops near me" },
   ];
 
   const scrollToBottom = () => {
@@ -28,17 +41,20 @@ export default function OpenSourceChat() {
 
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 100)}px`;
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(
+        textareaRef.current.scrollHeight,
+        100
+      )}px`;
     }
   }, [inputValue]);
 
   const typeText = (text, onComplete) => {
     let i = 0;
-    setPartialResponse('');
+    setPartialResponse("");
     const typingInterval = setInterval(() => {
       if (i < text.length) {
-        setPartialResponse(prev => prev + text.charAt(i));
+        setPartialResponse((prev) => prev + text.charAt(i));
         i++;
       } else {
         clearInterval(typingInterval);
@@ -47,103 +63,146 @@ export default function OpenSourceChat() {
     }, 5);
   };
 
-  const handleSendMessage = (e) => {
+  const callOpenAI = async (prompt) => {
+    try {
+      // Check if the prompt is location-based
+      const isLocationQuery = /near me|location|map|where can i find/i.test(
+        prompt.toLowerCase()
+      );
+
+      if (isLocationQuery) {
+        // Extract the location type (e.g., "coffee shops" from "find coffee shops near me")
+        const locationType = prompt
+          .replace(/near me|location|map|where can i find/gi, "")
+          .trim();
+
+        // Generate Google Maps URL
+        const mapsUrl = `https://www.google.com/maps/embed/v1/search?q=${encodeURIComponent(
+          locationType
+        )}&key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY`;
+
+        setMapLocation(mapsUrl);
+        setShowMapModal(true);
+
+        return `I found some ${locationType} locations for you. Here's what I found:`;
+      }
+
+      // For regular business queries
+      const response = await fetch(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are a helpful business advisor. Provide concise, professional advice about business plans, pitching, pricing, marketing, and other business topics. For location queries, just acknowledge that you will show a map.",
+              },
+              {
+                role: "user",
+                content: prompt,
+              },
+            ],
+            temperature: 0.7,
+            max_tokens: 500,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.choices[0].message.content.trim();
+    } catch (error) {
+      console.error("Error calling OpenAI API:", error);
+      return `I'm having trouble processing your request. (${error.message})`;
+    }
+  };
+
+  const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!inputValue.trim() || isTyping) return;
 
-    const userMessage = { role: 'user', content: inputValue };
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue('');
+    const userMessage = { role: "user", content: inputValue };
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
     setIsTyping(true);
     setHasInteracted(true);
 
-    setTimeout(() => {
-      const aiResponse = getAIResponse(inputValue);
+    try {
+      const aiResponse = await callOpenAI(inputValue);
+
       typeText(aiResponse, () => {
-        setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: aiResponse },
+        ]);
         setIsTyping(false);
-        setPartialResponse('');
+        setPartialResponse("");
       });
-    }, 400);
+    } catch (error) {
+      setIsTyping(false);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "Sorry, I couldn't process your request. Please try again later.",
+        },
+      ]);
+    }
   };
 
-  const handleQuickAction = (actionText) => {
+  const handleQuickAction = async (actionText) => {
     if (isTyping) return;
-    
-    const userMessage = { role: 'user', content: actionText };
-    setMessages(prev => [...prev, userMessage]);
+
+    const userMessage = { role: "user", content: actionText };
+    setMessages((prev) => [...prev, userMessage]);
     setIsTyping(true);
     setHasInteracted(true);
 
-    setTimeout(() => {
-      const aiResponse = getAIResponse(actionText);
+    try {
+      const aiResponse = await callOpenAI(actionText);
+
       typeText(aiResponse, () => {
-        setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: aiResponse },
+        ]);
         setIsTyping(false);
-        setPartialResponse('');
+        setPartialResponse("");
       });
-    }, 800);
+    } catch (error) {
+      setIsTyping(false);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "Sorry, I couldn't process your quick action. Please try again.",
+        },
+      ]);
+    }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage(e);
     }
   };
 
-  const getAIResponse = (question) => {
-    const responses = {
-      'business': `Creating a business plan involves several key sections:
-      
-1. **Executive Summary** - Overview of your business
-2. **Company Description** - What you do and why
-3. **Market Analysis** - Industry outlook and trends
-4. **Organization** - Your team structure
-5. **Products/Services** - What you're offering
-6. **Marketing Strategy** - How you'll attract customers
-7. **Financial Projections** - Revenue and expenses
-8. **Funding Request** - If seeking investment
-
-Would you like me to elaborate on any specific section?`,
-      'pitch': `Crafting an effective pitch requires these elements:
-      
-• **Hook** - Grab attention immediately
-• **Problem** - Clearly define the pain point
-• **Solution** - How your product/service solves it
-• **Market** - Size and opportunity
-• **Business Model** - How you'll make money
-• **Traction** - Current progress
-• **Ask** - What you need from the audience
-
-Would you like to practice your pitch with me?`,
-      'price': `Consider these pricing strategies:
-      
-**Cost-Plus** - Add markup to costs  
-**Value-Based** - Price according to perceived value  
-**Competitive** - Match or beat competitors  
-**Penetration** - Low initial price to gain market share  
-**Skimming** - Start high then lower over time  
-
-The best approach depends on your target market and product type.`,
-      'financial': `Essential financial concepts for entrepreneurs:
-      
-• **Cash Flow** - Tracking money in/out  
-• **Profit Margins** - Revenue minus costs  
-• **Break-Even** - When revenue covers expenses  
-• **Balance Sheet** - Assets vs liabilities  
-• **Tax Planning** - Understanding obligations  
-
-I can explain any of these in more detail if helpful.`
-    };
-
-    const lowerQuestion = question.toLowerCase();
-    if (lowerQuestion.includes('business')) return responses['business'];
-    if (lowerQuestion.includes('pitch')) return responses['pitch'];
-    if (lowerQuestion.includes('price')) return responses['price'];
-    if (lowerQuestion.includes('financial')) return responses['financial'];
-    
-    return "I'm happy to help with your business questions. Could you clarify or ask about something more specific?";
+  const closeMapModal = () => {
+    setShowMapModal(false);
+    setMapLocation("");
   };
 
   return (
@@ -161,52 +220,96 @@ I can explain any of these in more detail if helpful.`
                   <div className="text-4xl font-bold text-white tracking-wider">
                     Herizon AI
                   </div>
-                  
                 </div>
               )}
-              
+
               {/* Chat messages */}
               {messages.map((msg, index) => (
-                <div 
-                  key={index} 
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                <div
+                  key={index}
+                  className={`flex ${
+                    msg.role === "user" ? "justify-end" : "justify-start"
+                  }`}
                 >
-                  <div 
-                    className={`max-w-4xl rounded-2xl p-4 ${msg.role === 'user' 
-                      ? 'bg-white text-gray-800 rounded-br-none' 
-                      : 'bg-[#E1D7CD] text-gray-800 border border-white rounded-bl-none'}`}
+                  <div
+                    className={`max-w-4xl rounded-2xl p-4 ${
+                      msg.role === "user"
+                        ? "bg-white text-gray-800 rounded-br-none"
+                        : "bg-[#E1D7CD] text-gray-800 border border-white rounded-bl-none"
+                    }`}
                   >
                     <div className="whitespace-pre-wrap">{msg.content}</div>
                   </div>
                 </div>
               ))}
-              
+
               {/* Typing indicator */}
               {isTyping && (
                 <div className="flex justify-start">
                   <div className="bg-[#E1D7CD] text-gray-800 border border-white rounded-2xl rounded-bl-none p-4 max-w-4xl">
                     {partialResponse ? (
-                      <div className="whitespace-pre-wrap">{partialResponse}</div>
+                      <div className="whitespace-pre-wrap">
+                        {partialResponse}
+                      </div>
                     ) : (
                       <div className="flex space-x-2">
-                        <div className="w-2 h-2 rounded-full bg-gray-600 animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                        <div className="w-2 h-2 rounded-full bg-gray-600 animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                        <div className="w-2 h-2 rounded-full bg-gray-600 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                        <div
+                          className="w-2 h-2 rounded-full bg-gray-600 animate-bounce"
+                          style={{ animationDelay: "0ms" }}
+                        ></div>
+                        <div
+                          className="w-2 h-2 rounded-full bg-gray-600 animate-bounce"
+                          style={{ animationDelay: "150ms" }}
+                        ></div>
+                        <div
+                          className="w-2 h-2 rounded-full bg-gray-600 animate-bounce"
+                          style={{ animationDelay: "300ms" }}
+                        ></div>
                       </div>
                     )}
                   </div>
                 </div>
               )}
-              
+
               <div ref={messagesEndRef} />
             </div>
           </div>
         </div>
 
+        {/* Map Modal */}
+        {showMapModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg w-full max-w-4xl h-[80vh] flex flex-col">
+              <div className="flex justify-between items-center p-4 border-b">
+                <h3 className="text-lg font-semibold">Location Map</h3>
+                <button
+                  onClick={closeMapModal}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="flex-1">
+                <iframe
+                  src={mapLocation}
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Fixed Input Area at Bottom */}
         <div className="fixed bottom-8 left-0 right-0 bg-gradient-to-r from-[#817773] via-[#a59690] to-[#E1D7CD] z-20">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className={`mt-6 bg-white/10 backdrop-blur-sm rounded-2xl p-4 py-8 border border-white/20 mx-2 transition-all duration-300 ${!hasInteracted ? 'opacity-90' : ''}`}>
+            <div
+              className={`mt-6 bg-white/10 backdrop-blur-sm rounded-2xl p-4 py-8 border border-white/20 mx-2 transition-all duration-300 ${
+                !hasInteracted ? "opacity-90" : ""
+              }`}
+            >
               <form onSubmit={handleSendMessage}>
                 <div className="relative">
                   <textarea
@@ -217,12 +320,12 @@ I can explain any of these in more detail if helpful.`
                     placeholder="Ask anything About Business..."
                     className="w-full bg-white/20 rounded-2xl py-3 pl-5 pr-16 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#E1D7CD] resize-none overflow-y-auto"
                     rows={1}
-                    style={{ maxHeight: '200px' }}
+                    style={{ maxHeight: "200px" }}
                   />
-                  <button 
+                  <button
                     type="submit"
                     disabled={!inputValue.trim() || isTyping}
-                    className="absolute right-3 bottom-3 bg-white  hover:bg-[#D0C4B8] text-gray-800 p-2 rounded-full disabled:opacity-50 transition-colors"
+                    className="absolute right-3 bottom-3 bg-white hover:bg-[#D0C4B8] text-gray-800 p-2 rounded-full disabled:opacity-50 transition-colors"
                   >
                     <Send className="h-5 w-5" />
                   </button>
@@ -230,17 +333,17 @@ I can explain any of these in more detail if helpful.`
               </form>
             </div>
             <div className="flex justify-center mt-4 flex-wrap gap-4">
-                    {quickActions.map((action, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleQuickAction(action.text)}
-                        className="flex items-center gap-2 border-2 border-white rounded-full px-6 py-3 hover:bg-white/10 transition-all duration-200 text-white text-lg"
-                      >
-                        {action.icon}
-                        <span className='text-sm'>{action.text}</span>
-                      </button>
-                    ))}
-                  </div>
+              {quickActions.map((action, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleQuickAction(action.text)}
+                  className="flex items-center gap-2 border-2 border-white rounded-full px-6 py-3 hover:bg-white/10 transition-all duration-200 text-white text-sm"
+                >
+                  {action.icon}
+                  <span>{action.text}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -1,0 +1,82 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "path": "webhook-test/b7beb415-b1d7-4804-9b41-62f73cf37113",
+        "responseMode": "onReceived",
+        "responseData": "allEntries",
+        "options": {
+          "responseHeaders": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Accept, X-Requested-With"
+          }
+        }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "b7beb415-b1d7-4804-9b41-62f73cf37113"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Process incoming question\nconst question = $input.all()[0].json.question;\nconst type = $input.all()[0].json.type || 'chat';\n\n// Initialize response object\nlet response = {\n  response: \"I received your question but haven't been configured to respond properly yet.\"\n};\n\n// If it's a map request\nif (type === 'map' || question.match(/near me|location|map|address|find|where/i)) {\n  // Extract business type from question\n  const businessMatch = question.match(/find (.*?) near|(coffee|restaurant|store)/i);\n  const businessType = businessMatch ? (businessMatch[1] || businessMatch[2]) : 'business';\n  \n  // Create Google Maps URL\n  response = {\n    textResponse: `Here are some ${businessType} locations near you:`,\n    mapUrl: `https://www.google.com/maps/embed/v1/search?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(businessType)}`\n  };\n} else {\n  // Regular chat response\n  response.response = `I received your question: \\\"${question}\\\". ` +\n    \"This is a sample response from n8n.\";\n}\n\nreturn response;"
+      },
+      "name": "Process Request",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseHeaders": {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json"
+          }
+        }
+      },
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Process Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Request": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "id": "1"
+}
