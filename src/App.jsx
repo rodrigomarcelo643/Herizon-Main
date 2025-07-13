@@ -1,24 +1,25 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from './pages/Home';
-import OpenSourceChat from './pages/Open-Source-Chat';
-import MentorShip from './pages/MentorShip';
-import MentorDashoard from './pages/Mentor/MentorDashboard';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./pages/Home";
+import OpenSourceChat from "./pages/Open-Source-Chat";
+import Mentorship from "./pages/Mentorship";
+import MentorDashoard from "./pages/Mentor/MentorDashboard";
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Home />,
   },
- {
-  path: '/chat',
-  element: <OpenSourceChat />,
- },
- {
-  path: '/mentorship',
-  element: <MentorShip/> ,
- },  {
-  path: '/dashboard',
-  element: <MentorDashoard/> ,
- }
+  {
+    path: "/chat",
+    element: <OpenSourceChat />,
+  },
+  {
+    path: "/mentorship",
+    element: <Mentorship />,
+  },
+  {
+    path: "/dashboard",
+    element: <MentorDashoard />,
+  },
 ]);
 
 function App() {
