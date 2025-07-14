@@ -18,6 +18,9 @@ dist-ssr
 *.local
 .env
 
+# Custom ignored files
+backend/config/firebase.js
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
