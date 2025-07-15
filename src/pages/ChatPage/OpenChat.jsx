@@ -9,7 +9,7 @@ import {
   Mic,
   MicOff,
 } from "lucide-react";
-
+import Navbar from "../../components/Navbar";
 import { db } from "../../../backend/config/firebase";
 import {
   collection,
@@ -179,6 +179,7 @@ export default function OpenChat() {
 
   return (
     <div className="bg-gradient-to-r from-[#817773] via-[#a59690] to-[#E1D7CD] min-h-screen">
+      <Navbar/> 
       <div className="pt-16 pb-24">
         <div className="max-w-5xl mx-auto px-4">
           {!plan && (
