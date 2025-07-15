@@ -1,8 +1,14 @@
 import React from 'react'
 import DashboardNavBar from "../../components/DashboardNavBar";
 import { motion } from "framer-motion"
+import {useNavigate } from "react-router-dom"
 
 export default function Dashboard() {
+
+    const navigate = useNavigate();
+    const Logout = () => {
+        navigate("/");
+    }
 
     const buttonVariants = {
         hover: { scale: 1.05, transition: { duration: 0.2 } },
@@ -125,7 +131,7 @@ export default function Dashboard() {
                                 variants={buttonVariants}
                                 whileHover="hover"
                                 whileTap="tap"
-                                onClick={() => setShowLoginDialog(true)}
+                                onClick={Logout}
                             >
                                 Log out
                             </motion.button>
