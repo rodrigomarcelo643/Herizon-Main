@@ -66,8 +66,6 @@ export default function MentorDisplaySection() {
 
   return (
     <>
-    {/**  Navbar Display  */}
-    <Navbar/>
     <section className="bg-gradient-to-r from-[#ddd1cc] via-[#a59690] to-[#E1D7CD] py-20 relative overflow-hidden"> 
       {/* Dialog component */}
       <Dialog isOpen={isDialogOpen} onClose={closeDialog} />

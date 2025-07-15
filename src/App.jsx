@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/LandingPage/Home";
 import OpenChat from "./pages/ChatPage/OpenChat";
-import Mentor from "./pages/LandingPage/sections/MentorDisplaySection";
+import Mentor from "./pages/MentorPage/MentorPage";
 import Pricing from "./pages/Pricing/Pricing";
 import Dashboard from "./pages/Dashboard/Dashboard";
 const router = createBrowserRouter([
