@@ -1,15 +1,48 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: 'Montserrat';
-  src: url('./assets/fonts/Montserrat-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+  font-family: 'montserrat';
+  src: url('./assets/fonts/Montserrat-ExtraLight.ttf');
 }
-/* Apply Montserrat to all elements */
+
+@font-face {
+  font-family: 'montserrat';
+  src: url('./assets/fonts/Montserrat-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'montserrat-light';
+  src: url('./assets/fonts/Montserrat-Light.ttf');
+}
+
+@font-face {
+  font-family: 'montserrat-extralight';
+  src: url('./assets/fonts/Montserrat-ExtraLight.ttf');
+}
+
+@font-face {
+  font-family: 'rivage';
+  src: url('./assets/fonts/BeauRivage-Regular.ttf');
+}
+
+.font-montserrat {
+  font-family: 'montserrat', sans-serif;
+}
+
+.font-montserrat-light {
+  font-family: 'montserrat-light', sans-serif;
+}
+
+.font-montserrat-extralight {
+  font-family: 'montserrat-extralight', sans-serif;
+}
+
+.font-revage {
+  font-family: 'rivage', sans-serif;
+}
+
 body, body * {
-  font-family: 'Montserrat';
+  font-family: 'montserrat', sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -28,7 +61,6 @@ body, body * {
   background: #555;
 }
 
-/* Optional: Set base font styles */
 body {
   @apply antialiased; /* For smoother font rendering */
 }
