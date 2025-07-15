@@ -2,9 +2,14 @@
 
 export default function Mentor(){
     return(
-        <div>
-            <h1>MENTOR</h1>
-            <p>Here you can find all the information about the mentor</p>
+        <div className="text-[96px]">
+            <div className="flex justify-between ">
+                <h1 className="font-[Montserrat-Regular]">Mentor</h1>
+                <input type="text" placeholder="Search"/>
+            </div>
+            <div>
+
+            </div>
         </div>
     )
 }
