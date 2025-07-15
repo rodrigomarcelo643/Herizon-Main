@@ -155,7 +155,7 @@ export default function OpenChat() {
       recognition.onresult = (e) => {
         const transcript = e.results[0][0].transcript;
         setIdea(transcript);
-        generatePlan(transcript); // Auto-submit after speech
+        generatePlan(transcript); // <! -------- Auto-submit after speech
       };
       recognition.onerror = () => setIsListening(false);
 

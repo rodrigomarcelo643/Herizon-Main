@@ -25,6 +25,11 @@
   src: url('./assets/fonts/BeauRivage-Regular.ttf');
 }
 
+@font-face {
+  font-family: 'crushed';
+  src: url('./assets/fonts/Crushed-Regular.ttf');
+}
+
 .font-montserrat {
   font-family: 'montserrat', sans-serif;
 }
@@ -35,6 +40,9 @@
 
 .font-montserrat-extralight {
   font-family: 'montserrat-extralight', sans-serif;
+}
+.font-crushed {
+  font-family: 'crushed', sans-serif;
 }
 
 .font-revage {
