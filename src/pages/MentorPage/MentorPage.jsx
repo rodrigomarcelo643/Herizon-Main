@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Dialog from '../../components/Dialog'; 
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 const mentors = [
   {
     name: "JADE IAN LUCERO",
@@ -202,6 +203,7 @@ export default function MentorDisplaySection() {
         </motion.div>
       </div>
     </section>
+    <Footer/>
     </>
   );
 }
