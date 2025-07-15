@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import StaticIcons from "../assets/images/static-socmed-icons.svg";
+import {Link} from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -23,10 +24,10 @@ const Footer = () => {
             <div className="flex flex-row gap-16">
               <ul className="font-montserrat-light">
                 <p className="font-bold">Product</p>
-                <li className="mt-4">AI Assistant</li>
-                <li>Mentorship</li>
-                <li>Pricing Plans</li>
-                <li>Subscription</li>
+                <li className="mt-4"><Link to="/chat">AI Assistant</Link></li>
+                <li><Link to="/mentorship">Mentorship</Link></li>
+                <li><Link to="/pricing">Subscription</Link></li>
+            
               </ul>
                <ul className='font-montserrat-light'>
                 <p className="font-bold">Company</p>
@@ -36,7 +37,7 @@ const Footer = () => {
                 <li>Terms of Service</li>
               </ul>
               <ul>
-                <p className="font-bold">Social Medias</p>
+                <p className="font-bold">Social Links</p>
                 <img className="mt-5" src={StaticIcons} />
               </ul>
               
