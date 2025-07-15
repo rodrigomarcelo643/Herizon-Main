@@ -5,7 +5,7 @@ import Dialog from "./Dialog";
 import { Link } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 
-export default function Navbar() {
+export default function DashboardNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
 
@@ -61,7 +61,7 @@ export default function Navbar() {
               </Link>
             </motion.div>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Navigation
             <div className="hidden md:flex items-center space-x-8">
               {navItems.map((item) => (
                 <motion.div
@@ -77,7 +77,7 @@ export default function Navbar() {
                   </Link>
                 </motion.div>
               ))}
-            </div>
+            </div> */}
 
             {/* Desktop Login Button */}
             <div className="hidden md:flex items-center">

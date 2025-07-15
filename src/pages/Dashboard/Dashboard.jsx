@@ -2,6 +2,7 @@ import React from 'react'
 import DashboardNavBar from "../../components/DashboardNavBar";
 import { motion } from "framer-motion"
 import {useNavigate } from "react-router-dom"
+import profilePic from "../../assets/images/women_landing_page.svg"
 
 export default function Dashboard() {
 
@@ -23,7 +24,9 @@ export default function Dashboard() {
             <div className='flex gap-x-4'>
                 <div className='gap-y-4 grid'>
                     <div className='bg-[#EAEAEA] flex flex-col items-center rounded-3xl py-8 px-8 gap-y-4'>
-                        <div className='size-[150px] rounded-full bg-[#D9D9D9]'></div>
+                        <div className='size-[150px] rounded-full bg-[#D9D9D9] relative overflow-hidden'>
+                            <img src={profilePic} alt="" className='absolute'/>
+                        </div>
                         <h2>Jade Ian Lucero</h2>
                         <p className='text-xs text-[#00000099]'>james.lucero.swu@phinmaed.com</p>
                         <div className='bg-[#F9F5F0] px-8 py-2 rounded-full' >
