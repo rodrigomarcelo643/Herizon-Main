@@ -1,24 +1,24 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/LandingPage/Home";
 import OpenChat from "./pages/ChatPage/OpenChat";
-import Mentor from "./pages/MentorPage/MentorPage";
+import Mentor from "./pages/LandingPage/sections/MentorDisplaySection";
 import Pricing from "./pages/Pricing/Pricing";
 import Dashboard from "./pages/Dashboard/Dashboard";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home/> ,
+    element: <Home />,
   },
   {
-    path: "/chat", 
-    element: <OpenChat/> ,
+    path: "/chat",
+    element: <OpenChat />,
   },
-  { path: "/mentor", element: <Mentor/> },
+  { path: "/mentorship", element: <Mentor /> },
   {
     path: "/pricing",
-    element:  <Pricing/> 
-  }, 
-  { path: "/dashboard", element: <Dashboard/> },
+    element: <Pricing />,
+  },
+  { path: "/dashboard", element: <Dashboard /> },
 ]);
 
 function App() {

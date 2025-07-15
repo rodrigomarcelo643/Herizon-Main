@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Dialog from '../../../components/Dialog'; 
-
+import Navbar from '../../../components/Navbar';
 const mentors = [
   {
     name: "JADE IAN LUCERO",
@@ -65,7 +65,10 @@ export default function MentorDisplaySection() {
   };
 
   return (
-    <section className="bg-gradient-to-r from-[#817773] via-[#a59690] to-[#E1D7CD] py-20 relative overflow-hidden">
+    <>
+    {/**  Navbar Display  */}
+    <Navbar/>
+    <section className="bg-gradient-to-r from-[#ddd1cc] via-[#a59690] to-[#E1D7CD] py-20 relative overflow-hidden"> 
       {/* Dialog component */}
       <Dialog isOpen={isDialogOpen} onClose={closeDialog} />
 
@@ -188,5 +191,6 @@ export default function MentorDisplaySection() {
         </motion.div>
       </div>
     </section>
+    </>
   );
 }
