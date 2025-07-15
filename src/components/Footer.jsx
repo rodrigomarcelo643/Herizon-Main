@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import logo from "../assets/logo/herizon.svg";
+import StaticIcons from "../assets/images/static-socmed-icons.svg";
 
 const Footer = () => {
   return (
@@ -13,14 +13,35 @@ const Footer = () => {
           viewport={{ once: true }}
           className="space-y-4 text-center md:text-left"
         >
-          <div className="flex justify-center md:justify-start items-center">
-            <img src={logo} alt="Herizon AI" className="h-8" />
-            <span className="ml-2 text-xl font-bold">AI</span>
+          <div className="flex flex-row justify-between">
+            <div className="flex flex-col justify-start md:justify-start">
+              <h1 className="font-crushed text-7xl">HERIZON AI</h1>
+               <p className="text-white text-sm pt-4 max-w-md mx-auto md:mx-0">
+              Empowering  Women to Reach New Horizon
+            </p>
+            </div>
+            <div className="flex flex-row gap-16">
+              <ul className="font-montserrat-light">
+                <p className="font-bold">Product</p>
+                <li className="mt-4">AI Assistant</li>
+                <li>Mentorship</li>
+                <li>Pricing Plans</li>
+                <li>Subscription</li>
+              </ul>
+               <ul className='font-montserrat-light'>
+                <p className="font-bold">Company</p>
+                <li className="mt-4 ">About Us</li>
+                <li>Contact</li>
+                <li>Privacy Policy</li>
+                <li>Terms of Service</li>
+              </ul>
+              <ul>
+                <p className="font-bold">Social Medias</p>
+                <img className="mt-5" src={StaticIcons} />
+              </ul>
+              
+            </div>
           </div>
-          <p className="text-[#E1D7CD] max-w-md mx-auto md:mx-0">
-            Empowering women entrepreneurs with AI tools and mentorship to reach
-            new horizons.
-          </p>
         </motion.div>
 
         {/* Divider and Copyright */}

@@ -25,6 +25,14 @@
   src: url('./assets/fonts/BeauRivage-Regular.ttf');
 }
 
+<<<<<<< HEAD
+@font-face {
+  font-family: 'crushed';
+  src: url('./assets/fonts/Crushed-Regular.ttf');
+}
+
+=======
+>>>>>>> c2f93779895b6caa88d2d5f560f9d09a26c72f20
 .font-montserrat {
   font-family: 'montserrat', sans-serif;
 }
@@ -36,6 +44,12 @@
 .font-montserrat-extralight {
   font-family: 'montserrat-extralight', sans-serif;
 }
+<<<<<<< HEAD
+.font-crushed {
+  font-family: 'crushed', sans-serif;
+}
+=======
+>>>>>>> c2f93779895b6caa88d2d5f560f9d09a26c72f20
 
 .font-revage {
   font-family: 'rivage', sans-serif;
