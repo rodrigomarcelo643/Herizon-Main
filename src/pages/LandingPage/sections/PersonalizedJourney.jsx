@@ -26,7 +26,6 @@ function PresonalizedJourney() {
         <button className="text-xl text-[#1F2937] py-3 px-20 bg-white rounded-full transform hover:scale-105 transition-all ease-in-out cursor-pointer mt-12">Continue</button>
       </form>
     </div>
-    <div><p className="text-[10px] text-black text-center">© {new Date().getFullYear()} Herizon. All rights reserved.</p></div>
     </>
   )
 }
