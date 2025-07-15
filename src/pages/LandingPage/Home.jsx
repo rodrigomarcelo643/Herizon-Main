@@ -5,6 +5,7 @@ import HeroSection from './sections/HeroSection';
 import SecondSection from './sections/SecondSection';
 import Dialog from '../../components/Dialog';
 import MentorDisplaySection from './sections/MentorDisplaySection';
+import AIVideo from './sections/AIVideo';
 import Footer from '../../components/Footer';
 export default function Home() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
@@ -21,6 +22,7 @@ export default function Home() {
         onGetStartedClick={() => setShowLoginDialog(true)} 
         onAIClick={handleAIClick} 
       />
+      <AIVideo />
       <SecondSection />
       <MentorDisplaySection/> 
       <Footer/> 
