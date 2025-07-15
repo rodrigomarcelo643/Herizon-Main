@@ -56,7 +56,7 @@ export default function Dialog({ isOpen, onClose }) {
   const handleUserInfoSubmit = (e) => {
     e.preventDefault();
     console.log("User info submitted:", formData);
-    navigate("/user-dashboard");
+    navigate("/dashboard");
     onClose();
   };
 
