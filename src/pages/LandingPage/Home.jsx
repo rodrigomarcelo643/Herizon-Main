@@ -8,6 +8,7 @@ import MentorDisplaySection from './sections/MentorDisplaySection';
 import Footer from '../../components/Footer';
 import AIVideo from './sections/AIVideo';
 import PersonaLizedJourney from './sections/PersonalizedJourney';
+import Testimonials from './sections/Testimonials';
 export default function Home() {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ export default function Home() {
       <SecondSection />
       <MentorDisplaySection />
       <PersonaLizedJourney />
+      <Testimonials />
       <Footer />
       <Dialog
         isOpen={showLoginDialog}
